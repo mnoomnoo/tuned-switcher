@@ -128,12 +128,30 @@ QMenu* TrayIcon::createProfilesSubmenu()
     return trayIconProfiles;
 }
 
+QMenu* TrayIcon::createUserProfilesSubmenu()
+{
+    QMenu *trayIconUserProfiles = new QMenu(this);
+    QActionGroup *trayIcontGroup = new QActionGroup(trayIconUserProfiles);
+
+    trayIconUserProfiles -> setTitle(tr("My Profiles"));
+    trayIcontGroup -> setExclusive(true);
+
+    QAction* newUserProfileAction = new QAction(tr("New Profile ..."), this);
+    connect(newUserProfileAction, SIGNAL(triggered()), this, SLOT(newUserProfileEvent()));
+    trayIcontGroup -> addAction(newUserProfileAction);
+
+    trayIconUserProfiles -> addAction(newUserProfileAction);
+    trayIconUserProfiles -> addSeparator();
+    trayIconUserProfiles -> addActions(trayIcontGroup -> actions());
+    return trayIconUserProfiles;
+}
+
 QMenu* TrayIcon::createTrayIconMenu()
 {
     // Creating QMenu object...
     QMenu *trayIconMenu = new QMenu(this);
 
-    // Setting actions and slots...
+    // Setting Quit actions and slots...
     QAction *quitAction = new QAction(tr("Quit"), this);
     connect(quitAction, SIGNAL(triggered()), this, SLOT(exitEvent()));
 
@@ -142,8 +160,10 @@ QMenu* TrayIcon::createTrayIconMenu()
     autoProfile -> setCheckable(true);
     connect(autoProfile, SIGNAL(triggered(bool)), this, SLOT(profileAutoSelectedEvent(bool)));
 
+    // Construct the menu
     trayIconMenu -> addAction(autoProfile);
     trayIconMenu -> addSeparator();
+    trayIconMenu -> addMenu(createUserProfilesSubmenu());
     trayIconMenu -> addMenu(createProfilesSubmenu());
     trayIconMenu -> addSeparator();
     trayIconMenu -> addAction(quitAction);
@@ -179,4 +199,8 @@ void TrayIcon::profileSelectedEvent(QAction* action)
 void TrayIcon::exitEvent()
 {
     QApplication::exit(0);
+}
+
+void TrayIcon::newUserProfileEvent() {
+
 }

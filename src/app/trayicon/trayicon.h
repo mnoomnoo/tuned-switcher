@@ -67,6 +67,12 @@ private slots:
      * "Exit application" event slot (handler).
     */
     void exitEvent();
+
+    /**
+     * "New User Profile" event slot
+     */
+    void newUserProfileEvent();
+
 private:
     /**
      * Initialize the NotificationsManager class instance.
@@ -117,6 +123,11 @@ private:
      * @returns Pointer to the QMenu instance.
     */
     QMenu* createProfilesSubmenu();
+
+    /**
+     *
+     */
+    QMenu* createUserProfilesSubmenu();
 
     /**
      * Build and create menu for the system tray icon.
