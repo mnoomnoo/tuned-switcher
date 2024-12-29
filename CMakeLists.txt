@@ -162,11 +162,13 @@ target_link_libraries(${LIB_NAME} PUBLIC
 set(APPLICATION_HEADERS
     src/app/trayicon/trayicon.h
     src/app/mainwindow/mainwindow.h
+    src/app/newprofiledialog/newprofiledialog.h
 )
 
 set(APPLICATION_SOURCES
     src/app/trayicon/trayicon.cpp
     src/app/mainwindow/mainwindow.cpp
+    src/app/newprofiledialog/newprofiledialog.cpp
     src/app/main.cpp
 )
 
@@ -176,6 +178,7 @@ set(APPLICATION_RESOURCES
 
 set(APPLICATION_UI_SOURCES
     src/app/mainwindow/mainwindow.ui
+    src/app/newprofiledialog/newprofiledialog.ui
 )
 
 add_executable(${APP_NAME}

@@ -36,7 +36,7 @@ public:
     /**
      * Destructor of the TrayIcon class.
     */
-    ~TrayIcon();
+    virtual ~TrayIcon();
 
     /**
      * Show the system tray icon.

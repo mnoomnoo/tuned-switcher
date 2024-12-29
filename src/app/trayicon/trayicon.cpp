@@ -13,6 +13,7 @@
 #include <QThread>
 
 #include "trayicon/trayicon.h"
+#include "newprofiledialog/newprofiledialog.h"
 
 TrayIcon::TrayIcon(QWidget *parent) : QWidget(parent)
 {
@@ -202,5 +203,6 @@ void TrayIcon::exitEvent()
 }
 
 void TrayIcon::newUserProfileEvent() {
-
+    NewProfileDialog newProfileDialog;
+    newProfileDialog.exec();
 }

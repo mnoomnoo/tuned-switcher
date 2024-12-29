@@ -43,7 +43,7 @@ public:
     /**
      * Destructor of the MainWindow class.
     */
-    ~MainWindow();
+    virtual ~MainWindow();
 
 protected slots:
     /**
