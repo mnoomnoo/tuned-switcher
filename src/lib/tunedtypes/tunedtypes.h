@@ -53,6 +53,35 @@ typedef QList<QTunedProfile> QTunedProfileList;
 Q_DECLARE_METATYPE(QTunedProfileList)
 
 /**
+ * Structure for getting more information about a single Tuned profile.
+ */
+struct QTunedProfileInfo
+{
+    bool Success;
+
+    QString Message0;
+
+    QString Message1;
+
+    QString Message2;
+
+
+    QTunedProfileInfo() : Success(false), Message0(), Message1(), Message2() {}
+
+    /**
+     * Operator << of the QTunedProfileInfo structure.
+    */
+    friend QDBusArgument &operator<<(QDBusArgument &argument, const QTunedProfileInfo &arg);
+
+    /**
+     * Operator >> of the QTunedProfileInfo structure.
+    */
+    friend const QDBusArgument &operator>>(const QDBusArgument &argument, QTunedProfileInfo &arg);
+
+};
+Q_DECLARE_METATYPE(QTunedProfileInfo)
+
+/**
  * Structure for working Tuned profile modes.
 */
 struct QTunedProfileMode

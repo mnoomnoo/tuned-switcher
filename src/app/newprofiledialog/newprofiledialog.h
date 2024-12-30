@@ -12,6 +12,9 @@
 */
 
 #include <QDialog>
+#include <QActionGroup>
+
+#include "tunedmanager/tunedmanager.h"
 
 /**
  * UI namespace.
@@ -35,7 +38,7 @@ public:
      * Main constructor of the NewProfileDialog class.
      * @param parent Parent widget.
     */
-    explicit NewProfileDialog(QWidget *parent = nullptr);
+    explicit NewProfileDialog(const TunedManager *tunedManager, QWidget *parent = nullptr);
 
     /**
      * Destructor of the NewProfileDialog class.
@@ -46,13 +49,18 @@ protected slots:
 
 
 private slots:
-
+    void onKnownProfileSelectedEvent(int index);
 
 private:
     /**
      * Stores the GUI application form instance.
     */
     Ui::NewProfileDialog *ui;
+
+    /**
+     *
+     */
+    const TunedManager *tunedManager;
 
 };
 

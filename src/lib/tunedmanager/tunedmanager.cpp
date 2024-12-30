@@ -21,6 +21,13 @@ QString TunedManager::GetActiveProfile() const
     return DBusReply.value();
 }
 
+QTunedProfileInfo TunedManager::GetProfileInfo(const QString& profileName) const
+{
+    QDBusInterface DBusInterface(TunedBusName, TunedBusPath, TunedBusInterface, DBusInstance);
+    QDBusReply<QTunedProfileInfo> DBusReply = DBusInterface.call(TunedBusMethodNameProfileInfo, profileName);
+    return DBusReply.value();
+}
+
 QStringList TunedManager::GetAvailableProfiles() const
 {
     QDBusInterface DBusInterface(TunedBusName, TunedBusPath, TunedBusInterface, DBusInstance);
@@ -99,6 +106,8 @@ TunedManager::TunedManager(QObject *parent) : QObject(parent)
         qDBusRegisterMetaType<QTunedProfileMode>();
         qRegisterMetaType<QTunedResult>("QTunedResult");
         qDBusRegisterMetaType<QTunedResult>();
+        qRegisterMetaType<QTunedProfileInfo>("QTunedProfileInfo");
+        qDBusRegisterMetaType<QTunedProfileInfo>();
         QDBusConnection::systemBus().connect(TunedBusName, TunedBusPath, TunedBusInterface, TunedBusSignalNameProfileChanged, this, SLOT(ProfileChangedEvent(const QString&, const bool, const QString&)));
     }
 }

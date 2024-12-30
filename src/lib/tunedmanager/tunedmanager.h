@@ -36,6 +36,12 @@ public:
     QString GetActiveProfile() const;
 
     /**
+     * Get info for Tuned profile.
+     * @returns Tuned profile info.
+    */
+    QTunedProfileInfo GetProfileInfo(const QString& profileName) const;
+
+    /**
      * Get the list of available Tuned profiles.
      * @returns Available Tuned profiles.
     */
@@ -118,6 +124,11 @@ private:
      * Stores the Tuned DBus ActiveProfile method name.
     */
     const QString TunedBusMethodNameActiveProfile = QStringLiteral("active_profile");
+
+    /**
+     * Stores the Tuned DBus ProfileInfo method name.
+    */
+    const QString TunedBusMethodNameProfileInfo = QStringLiteral("profile_info");
 
     /**
      * Stores the Tuned DBus AvailableProfiles method name.

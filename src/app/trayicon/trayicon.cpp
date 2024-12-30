@@ -203,6 +203,6 @@ void TrayIcon::exitEvent()
 }
 
 void TrayIcon::newUserProfileEvent() {
-    NewProfileDialog newProfileDialog;
+    NewProfileDialog newProfileDialog(tunedManager);
     newProfileDialog.exec();
 }

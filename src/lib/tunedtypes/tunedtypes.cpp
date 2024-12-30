@@ -70,3 +70,27 @@ const QDBusArgument& operator >>(const QDBusArgument& argument, QTunedResult& re
 
     return argument;
 }
+
+QDBusArgument& operator <<(QDBusArgument& argument, const QTunedProfileInfo& result)
+{
+    argument.beginStructure();
+    argument << result.Success;
+    argument << result.Message0;
+    argument << result.Message1;
+    argument << result.Message2;
+    argument.endStructure();
+
+    return argument;
+}
+
+const QDBusArgument& operator >>(const QDBusArgument& argument, QTunedProfileInfo& result)
+{
+    argument.beginStructure();
+    argument >> result.Success;
+    argument >> result.Message0;
+    argument >> result.Message1;
+    argument >> result.Message2;
+    argument.endStructure();
+
+    return argument;
+}
