@@ -35,6 +35,8 @@ private:
     QList<HighlightingRule> highlightingRules;
 
     QTextCharFormat singleLineCommentFormat;
+    QTextCharFormat confSectionFormat;
+    QTextCharFormat confValueFormat;
 };
 
 

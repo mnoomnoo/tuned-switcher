@@ -18,6 +18,16 @@ ProfileHighlighter::ProfileHighlighter(QTextDocument *parent) : QSyntaxHighlight
     rule.pattern = QRegularExpression(QStringLiteral("#[^\n]*"));
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
+
+    confSectionFormat.setForeground(Qt::cyan);
+    rule.pattern = QRegularExpression(QStringLiteral("\\[.*\\]"));
+    rule.format = confSectionFormat;
+    highlightingRules.append(rule);
+
+    confValueFormat.setForeground(Qt::yellow);
+    rule.pattern = QRegularExpression(QStringLiteral("(?<=\\=).*[^\n]"));
+    rule.format = confValueFormat;
+    highlightingRules.append(rule);
 }
 
 ProfileHighlighter::~ProfileHighlighter()
