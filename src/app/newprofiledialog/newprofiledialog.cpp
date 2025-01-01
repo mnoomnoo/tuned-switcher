@@ -57,10 +57,14 @@ void NewProfileDialog::accept()
 
     // create directory for new profile
     QDir dir;
-    dir.mkpath(profileDir);
+    if( !dir.mkpath(profileDir) )
+    {
+        return;
+    }
 
     QFile file(profileDir + "/tuned.conf");
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
         return;
     }
 
