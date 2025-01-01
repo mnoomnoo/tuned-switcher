@@ -12,6 +12,11 @@
 */
 
 /**
+ *
+ */
+void RegisterMetaTypes();
+
+/**
  * Check if the process is authorized to perform the policykit.exec action
  * @returns true / false
  * @retval true if the process is authorized to perform the action

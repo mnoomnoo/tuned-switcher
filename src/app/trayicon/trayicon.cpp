@@ -14,6 +14,7 @@
 
 #include "trayicon/trayicon.h"
 #include "newprofiledialog/newprofiledialog.h"
+#include "policykit/policykit.h"
 
 TrayIcon::TrayIcon(QWidget *parent) : QWidget(parent)
 {
@@ -24,6 +25,7 @@ TrayIcon::TrayIcon(QWidget *parent) : QWidget(parent)
     markCurrentProfile();
     markAutoProfileMode();
     subscribeToEvents();
+    RegisterMetaTypes();
 }
 
 TrayIcon::~TrayIcon()

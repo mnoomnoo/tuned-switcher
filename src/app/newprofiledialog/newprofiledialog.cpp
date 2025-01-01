@@ -9,7 +9,7 @@
 */
 
 #include <QFile>
-
+#include <QDir>
 
 #include "newprofiledialog/newprofiledialog.h"
 #include "ui_newprofiledialog.h"
@@ -51,6 +51,25 @@ void NewProfileDialog::accept()
     {
         return;
     }
+
+    const QString profileName = ui -> newProfileNameLineEdit -> text();
+    const QString profileDir = "/etc/tuned/profiles/" + profileName;
+
+    // create directory for new profile
+    QDir dir;
+    dir.mkpath(profileDir);
+
+    QFile file(profileDir + "/tuned.conf");
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return;
+    }
+
+    const QString profileContents = ui -> newProfilePlainTextEdit -> toPlainText();
+    QTextStream out(&file);
+
+    out << profileContents << Qt::endl;
+
+    file.close();
 
     QDialog::accept();
 }
