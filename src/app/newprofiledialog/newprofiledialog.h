@@ -45,6 +45,10 @@ public:
     */
     virtual ~NewProfileDialog();
 
+public slots:
+    virtual void accept();
+    virtual void reject();
+
 protected slots:
 
 

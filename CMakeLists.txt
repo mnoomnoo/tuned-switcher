@@ -125,6 +125,7 @@ set(LIBRARY_HEADERS
     src/lib/notificationsmanager/dbusconverters.h
     src/lib/notificationsmanager/notificationsmanager.h
     src/lib/tunedmanager/tunedmanager.h
+    src/lib/policykit/policykit.h
 )
 
 set(LIBRARY_SOURCES
@@ -132,6 +133,7 @@ set(LIBRARY_SOURCES
     src/lib/translationmanager/translationmanager.cpp
     src/lib/notificationsmanager/notificationsmanager.cpp
     src/lib/tunedmanager/tunedmanager.cpp
+    src/lib/policykit/policykit.cpp
 )
 
 configure_file(

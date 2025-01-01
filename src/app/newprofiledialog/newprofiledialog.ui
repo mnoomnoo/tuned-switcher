@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>875</width>
-    <height>984</height>
+    <width>1138</width>
+    <height>1081</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,7 +36,22 @@
       </widget>
      </item>
      <item>
-      <widget class="QTextEdit" name="newProfileTextEdit"/>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="title">
+        <string>New Profile Name</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QLineEdit" name="newProfileNameLineEdit"/>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_3"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPlainTextEdit" name="newProfilePlainTextEdit"/>
      </item>
      <item>
       <widget class="QDialogButtonBox" name="buttonBox">
@@ -50,5 +65,38 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>NewProfileDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>568</x>
+     <y>1056</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>568</x>
+     <y>540</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>NewProfileDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>568</x>
+     <y>1056</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>568</x>
+     <y>540</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
