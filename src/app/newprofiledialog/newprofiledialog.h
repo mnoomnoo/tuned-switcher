@@ -15,6 +15,7 @@
 #include <QActionGroup>
 
 #include "tunedmanager/tunedmanager.h"
+#include "profilesyntaxhighlighter.h"
 
 /**
  * UI namespace.
@@ -56,6 +57,9 @@ private slots:
     void onKnownProfileSelectedEvent(int index);
 
 private:
+    QString readProfileContents(const QString& profileName);
+
+private:
     /**
      * Stores the GUI application form instance.
     */
@@ -66,6 +70,10 @@ private:
      */
     const TunedManager *tunedManager;
 
+    /**
+     *
+     */
+    ProfileHighlighter *highlighter;
 };
 
 #endif // MAINWINDOW_H

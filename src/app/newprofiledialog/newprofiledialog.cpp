@@ -1,12 +1,20 @@
+/**
+ * SPDX-FileCopyrightText: 2021-2023 EasyCoding Team and contributors
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+*/
+
 /** @file app/newprofiledialog/newprofiledialog.cpp
  * This file contains implementation of the NewProfileDialog class.
 */
 
 #include <QFile>
 
+
 #include "newprofiledialog/newprofiledialog.h"
 #include "ui_newprofiledialog.h"
 #include "policykit/policykit.h"
+
 
 const QString noneProfile = "NONE";
 
@@ -14,6 +22,7 @@ NewProfileDialog::NewProfileDialog(const TunedManager *tunedManager, QWidget *pa
     QDialog(parent)
     , ui(new Ui::NewProfileDialog)
     , tunedManager(tunedManager)
+    , highlighter(nullptr)
 {
     ui -> setupUi(this);
 
@@ -25,6 +34,9 @@ NewProfileDialog::NewProfileDialog(const TunedManager *tunedManager, QWidget *pa
     connect(ui -> knownProfilesComboBox, SIGNAL(activated(int)), this, SLOT(onKnownProfileSelectedEvent(int)));
 
     ui -> knownProfilesComboBox->setCurrentIndex(0);
+    ui -> newProfileNameLineEdit -> setText("new-profile");
+
+    ProfileHighlighter *highlighter = new ProfileHighlighter(ui -> newProfilePlainTextEdit->document());
 }
 
 NewProfileDialog::~NewProfileDialog()
@@ -50,12 +62,28 @@ void NewProfileDialog::reject()
 
 void NewProfileDialog::onKnownProfileSelectedEvent(int index)
 {
-    const QString text = ui -> knownProfilesComboBox -> itemText(index);
-    const QString fileName = "/usr/lib/tuned/profiles/" + text + "/tuned.conf";
+    const QString profileName = ui -> knownProfilesComboBox -> itemText(index);
 
+    // 0 is the default NONE index
+    if( 0 == index )
+    {
+        ui -> newProfileNameLineEdit -> setText("new-profile");
+    }
+    else
+    {
+        ui -> newProfileNameLineEdit -> setText("new-" + profileName);
+    }
+
+    const QString profileContents = readProfileContents(profileName);
+    ui -> newProfilePlainTextEdit -> setPlainText(profileContents);
+}
+
+QString NewProfileDialog::readProfileContents(const QString& profileName)
+{
+    const QString fileName = "/usr/lib/tuned/profiles/" + profileName + "/tuned.conf";
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        return;
+        return "";
     }
 
     QTextStream in(&file);
@@ -63,6 +91,7 @@ void NewProfileDialog::onKnownProfileSelectedEvent(int index)
 
     file.close();
 
-    ui -> newProfilePlainTextEdit -> setPlainText(profileContents);
-
+    return profileContents;
 }
+
+

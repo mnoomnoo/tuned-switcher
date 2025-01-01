@@ -165,12 +165,14 @@ set(APPLICATION_HEADERS
     src/app/trayicon/trayicon.h
     src/app/mainwindow/mainwindow.h
     src/app/newprofiledialog/newprofiledialog.h
+    src/app/newprofiledialog/profilesyntaxhighlighter.h
 )
 
 set(APPLICATION_SOURCES
     src/app/trayicon/trayicon.cpp
     src/app/mainwindow/mainwindow.cpp
     src/app/newprofiledialog/newprofiledialog.cpp
+    src/app/newprofiledialog/profilesyntaxhighlighter.cpp
     src/app/main.cpp
 )
 
