@@ -62,6 +62,18 @@ include(cmake/FindPandoc.cmake)
 include(cmake/FindTestHelpers.cmake)
 
 # ======================================================
+# ==================== pkexec detection ================
+# ======================================================
+
+find_program(PKEXEC_PROGRAM pkexec)
+
+if(PKEXEC_PROGRAM)
+    message(STATUS "Found pkexec at ${PKEXEC_PROGRAM}")
+else()
+    message(FATAL_ERROR "pkexec not found!")
+endif()
+
+# ======================================================
 # ==================== Qt detection ====================
 # ======================================================
 
@@ -125,7 +137,7 @@ set(LIBRARY_HEADERS
     src/lib/notificationsmanager/dbusconverters.h
     src/lib/notificationsmanager/notificationsmanager.h
     src/lib/tunedmanager/tunedmanager.h
-    src/lib/policykit/policykit.h
+    src/lib/profiles/profiles.h
 )
 
 set(LIBRARY_SOURCES
@@ -133,7 +145,7 @@ set(LIBRARY_SOURCES
     src/lib/translationmanager/translationmanager.cpp
     src/lib/notificationsmanager/notificationsmanager.cpp
     src/lib/tunedmanager/tunedmanager.cpp
-    src/lib/policykit/policykit.cpp
+    src/lib/profiles/profiles.cpp
 )
 
 configure_file(

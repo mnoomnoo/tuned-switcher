@@ -13,7 +13,7 @@
 
 #include "newprofiledialog/newprofiledialog.h"
 #include "ui_newprofiledialog.h"
-#include "policykit/policykit.h"
+#include "profiles/profiles.h"
 
 
 const QString noneProfile = "NONE";
@@ -47,33 +47,12 @@ NewProfileDialog::~NewProfileDialog()
 
 void NewProfileDialog::accept()
 {
-    if( !CheckAuthorization() )
-    {
-        return;
-    }
-
     const QString profileName = ui -> newProfileNameLineEdit -> text();
-    const QString profileDir = "/etc/tuned/profiles/" + profileName;
-
-    // create directory for new profile
-    QDir dir;
-    if( !dir.mkpath(profileDir) )
-    {
-        return;
-    }
-
-    QFile file(profileDir + "/tuned.conf");
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-    {
-        return;
-    }
-
     const QString profileContents = ui -> newProfilePlainTextEdit -> toPlainText();
-    QTextStream out(&file);
 
-    out << profileContents << Qt::endl;
-
-    file.close();
+    if( !CreateNewProfile(profileName, profileContents) ) {
+        return;
+    }
 
     QDialog::accept();
 }
