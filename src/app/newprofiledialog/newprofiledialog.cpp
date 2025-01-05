@@ -50,6 +50,8 @@ void NewProfileDialog::accept()
     const QString profileName = ui -> newProfileNameLineEdit -> text();
     const QString profileContents = ui -> newProfilePlainTextEdit -> toPlainText();
 
+    // TODO: sanitize the input!
+
     if( !CreateNewProfile(profileName, profileContents) ) {
         return;
     }
@@ -82,8 +84,25 @@ void NewProfileDialog::onKnownProfileSelectedEvent(int index)
 
 QString NewProfileDialog::readProfileContents(const QString& profileName)
 {
-    const QString fileName = "/usr/lib/tuned/profiles/" + profileName + "/tuned.conf";
-    QFile file(fileName);
+    const QString systemProfilefileName = "/usr/lib/tuned/profiles/" + profileName + "/tuned.conf";
+    const QString userProfileFileName = "/etc/tuned/profiles/" + profileName + "/tuned.conf";
+
+    QString profileFileName = "";
+
+    if( QFile::exists(systemProfilefileName) )
+    {
+        profileFileName = systemProfilefileName;
+    }
+    else if( QFile::exists(userProfileFileName) )
+    {
+        profileFileName = userProfileFileName;
+    }
+
+    if( profileFileName.isEmpty() ) {
+        return "";
+    }
+
+    QFile file(profileFileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return "";
     }
