@@ -104,6 +104,12 @@ public:
      * @retval false An error occured when trying to stop Tuned.
     */
     bool Stop() const;
+
+    /**
+     *
+     */
+    bool Reload() const;
+
 private:
     /**
      * Stores the Tuned DBus interface name.
@@ -159,6 +165,26 @@ private:
      * Stores the Tuned DBus AvailableProfiles2 method name.
     */
     const QString TunedBusMethodNameProfiles2 = QStringLiteral("profiles2");
+
+    /**
+     * Stores the Tuned DBus MethodNameStart method name.
+    */
+    const QString TunedBusMethodNameStart = QStringLiteral("start");
+
+    /**
+     * Stores the Tuned DBus MethodNameStop method name.
+    */
+    const QString TunedBusMethodNameStop = QStringLiteral("stop");
+
+    /**
+     * Stores the Tuned DBus MethodNameIsRunning method name.
+    */
+    const QString TunedBusMethodNameIsRunning = QStringLiteral("is_running");
+
+    /**
+     * Stores the Tuned DBus MethodNameReload method name.
+    */
+    const QString TunedBusMethodNameReload = QStringLiteral("reload");
 
     /**
      * Stores the Systemd DBus interface name.

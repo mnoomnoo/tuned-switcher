@@ -73,6 +73,21 @@ private slots:
      */
     void newUserProfileEvent();
 
+    /**
+     *
+     */
+    void startTunedService();
+
+    /**
+     *
+     */
+    void stopTunedService();
+
+    /**
+     *
+     */
+    void reloadTunedConfiguration();
+
 private:
     /**
      * Initialize the NotificationsManager class instance.
@@ -127,7 +142,7 @@ private:
     /**
      *
      */
-    QMenu* createUserProfilesSubmenu();
+    QMenu* createTuneDSubmenu();
 
     /**
      * Build and create menu for the system tray icon.
@@ -160,6 +175,11 @@ private:
      * Stores pointer to the "Auto-profile" system menu entry.
     */
     QAction* autoProfile;
+
+    /**
+     *
+     */
+    QMenu* trayIconProfilesMenu;
 };
 
 #endif // TRAYICON_H

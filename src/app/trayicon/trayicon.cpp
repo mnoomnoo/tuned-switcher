@@ -11,12 +11,15 @@
 #include <QApplication>
 #include <QActionGroup>
 #include <QThread>
+#include <QMessageBox>
 
 #include "trayicon/trayicon.h"
 #include "newprofiledialog/newprofiledialog.h"
 
 TrayIcon::TrayIcon(QWidget *parent) : QWidget(parent)
 {
+    trayIconProfilesMenu = new QMenu(this);
+
     initializeNotifications();
     initializeTuned();
     checkTunedRunning();
@@ -30,6 +33,7 @@ TrayIcon::~TrayIcon()
 {
     delete notifications;
     delete tunedManager;
+    delete trayIconProfilesMenu;
 }
 
 void TrayIcon::initializeNotifications()
@@ -108,16 +112,15 @@ void TrayIcon::profileChangedEvent(const QString& profile, const bool result, co
 
 QMenu* TrayIcon::createProfilesSubmenu()
 {
-    QMenu *trayIconProfiles = new QMenu(this);
-    QActionGroup *trayIcontGroup = new QActionGroup(trayIconProfiles);
+    QActionGroup *trayIcontGroup = new QActionGroup(trayIconProfilesMenu);
     const QStringList availableProfiles = tunedManager -> GetAvailableProfiles();
 
-    trayIconProfiles -> setTitle(tr("Profiles"));
+    trayIconProfilesMenu -> setTitle(tr("Profiles"));
     trayIcontGroup -> setExclusive(true);
 
     for(int i = 0; i < availableProfiles.size(); i++)
     {
-        QAction* profileAction = new QAction(availableProfiles[i], this);
+        QAction* profileAction = new QAction(availableProfiles[i]);
         profileAction -> setData(availableProfiles[i]);
         profileAction -> setCheckable(true);
         trayIcontGroup -> addAction(profileAction);
@@ -125,24 +128,32 @@ QMenu* TrayIcon::createProfilesSubmenu()
     }
 
     connect(trayIcontGroup, SIGNAL(triggered(QAction*)), this, SLOT(profileSelectedEvent(QAction*)));
-    trayIconProfiles -> addActions(trayIcontGroup -> actions());
-    return trayIconProfiles;
+    trayIconProfilesMenu -> addActions(trayIcontGroup -> actions());
+    return trayIconProfilesMenu;
 }
 
-QMenu* TrayIcon::createUserProfilesSubmenu()
+QMenu* TrayIcon::createTuneDSubmenu()
 {
     QMenu *trayIconUserProfiles = new QMenu(this);
     QActionGroup *trayIcontGroup = new QActionGroup(trayIconUserProfiles);
 
-    trayIconUserProfiles -> setTitle(tr("My Profiles"));
+    trayIconUserProfiles -> setTitle(tr("TuneD"));
     trayIcontGroup -> setExclusive(true);
 
-    QAction* newUserProfileAction = new QAction(tr("New Profile ..."), this);
-    connect(newUserProfileAction, SIGNAL(triggered()), this, SLOT(newUserProfileEvent()));
-    trayIcontGroup -> addAction(newUserProfileAction);
+    QAction* startTunedAction = new QAction("Start ...");
+    connect(startTunedAction, SIGNAL(triggered()), this, SLOT(startTunedService()));
 
-    trayIconUserProfiles -> addAction(newUserProfileAction);
-    trayIconUserProfiles -> addSeparator();
+    QAction* stopTunedAction = new QAction("Stop ...");
+    connect(stopTunedAction, SIGNAL(triggered()), this, SLOT(stopTunedService()));
+
+    QAction* reloadTunedAction = new QAction("Reload configuration...");
+    connect(reloadTunedAction, SIGNAL(triggered()), this, SLOT(reloadTunedConfiguration()));
+
+    trayIconUserProfiles -> addAction(startTunedAction);
+    trayIconUserProfiles -> addAction(stopTunedAction);
+    trayIconUserProfiles -> addAction(reloadTunedAction);
+
+    // trayIconUserProfiles -> addSeparator();
     trayIconUserProfiles -> addActions(trayIcontGroup -> actions());
     return trayIconUserProfiles;
 }
@@ -161,11 +172,16 @@ QMenu* TrayIcon::createTrayIconMenu()
     autoProfile -> setCheckable(true);
     connect(autoProfile, SIGNAL(triggered(bool)), this, SLOT(profileAutoSelectedEvent(bool)));
 
+    QAction* newUserProfileAction = new QAction(tr("New Profile ..."), this);
+    connect(newUserProfileAction, SIGNAL(triggered()), this, SLOT(newUserProfileEvent()));
+
     // Construct the menu
     trayIconMenu -> addAction(autoProfile);
     trayIconMenu -> addSeparator();
-    trayIconMenu -> addMenu(createUserProfilesSubmenu());
+    trayIconMenu -> addAction(newUserProfileAction);
     trayIconMenu -> addMenu(createProfilesSubmenu());
+    trayIconMenu -> addSeparator();
+    trayIconMenu -> addMenu(createTuneDSubmenu());
     trayIconMenu -> addSeparator();
     trayIconMenu -> addAction(quitAction);
     return trayIconMenu;
@@ -204,5 +220,53 @@ void TrayIcon::exitEvent()
 
 void TrayIcon::newUserProfileEvent() {
     NewProfileDialog newProfileDialog(tunedManager);
-    newProfileDialog.exec();
+    const int rtnCode = newProfileDialog.exec();
+
+    if( QDialog::Accepted == rtnCode ) {
+        // refresh the profiles tray menu
+        trayIconProfilesMenu->clear();
+        createProfilesSubmenu();
+    }
 }
+
+void TrayIcon::startTunedService() {
+    if(tunedManager->IsRunning()) {
+        QMessageBox msgBox;
+        msgBox.setText("TuneD is already running!");
+        msgBox.exec();
+        return;
+    }
+
+    if( !tunedManager->Start() ) {
+        QMessageBox msgBox;
+        msgBox.setIcon(QMessageBox::Critical);
+        msgBox.setText("TuneD failed to start!");
+        msgBox.exec();
+    }
+}
+
+void TrayIcon::stopTunedService() {
+    if( !tunedManager->IsRunning() ) {
+        QMessageBox msgBox;
+        msgBox.setText("TuneD is already stopped!");
+        msgBox.exec();
+        return;
+    }
+
+    if( !tunedManager->Stop() ) {
+        QMessageBox msgBox;
+        msgBox.setIcon(QMessageBox::Critical);
+        msgBox.setText("TuneD failed to stop!");
+        msgBox.exec();
+    }
+}
+
+void TrayIcon::reloadTunedConfiguration() {
+    if( !tunedManager->Reload() ) {
+        QMessageBox msgBox;
+        msgBox.setIcon(QMessageBox::Critical);
+        msgBox.setText("TuneD failed to reload!");
+        msgBox.exec();
+    }
+}
+

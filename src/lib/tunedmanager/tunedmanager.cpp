@@ -72,21 +72,39 @@ QTunedProfileList TunedManager::GetAvailableProfiles2() const
 bool TunedManager::IsRunning() const
 {
     QDBusInterface DBusInterface(TunedBusName, TunedBusPath, TunedBusInterface, DBusInstance);
-    return DBusInterface.isValid();
+    QDBusReply<bool> DBusReply = DBusInterface.call(TunedBusMethodNameIsRunning);
+    return DBusReply.value();
+
+    // QDBusInterface DBusInterface(TunedBusName, TunedBusPath, TunedBusInterface, DBusInstance);
+    // return DBusInterface.isValid();
 }
 
 bool TunedManager::Start() const
 {
-    QDBusInterface DBusInterface(SystemdBusName, SystemdBusPath, SystemdBusInterface, DBusInstance);
-    QDBusReply<void> DBusReply = DBusInterface.call(SystemdBusMethodNameStart, SystemdTunedServiceName, SystemdTunedServiceMode);
-    return DBusReply.isValid();
+    QDBusInterface DBusInterface(TunedBusName, TunedBusPath, TunedBusInterface, DBusInstance);
+    QDBusReply<bool> DBusReply = DBusInterface.call(TunedBusMethodNameStart);
+    return DBusReply.value();
+
+    // QDBusInterface DBusInterface(SystemdBusName, SystemdBusPath, SystemdBusInterface, DBusInstance);
+    // QDBusReply<void> DBusReply = DBusInterface.call(SystemdBusMethodNameStart, SystemdTunedServiceName, SystemdTunedServiceMode);
+    // return DBusReply.isValid();
 }
 
 bool TunedManager::Stop() const
 {
-    QDBusInterface DBusInterface(SystemdBusName, SystemdBusPath, SystemdBusInterface, DBusInstance);
-    QDBusReply<void> DBusReply = DBusInterface.call(SystemdBusMethodNameStop, SystemdTunedServiceName, SystemdTunedServiceMode);
-    return DBusReply.isValid();
+    QDBusInterface DBusInterface(TunedBusName, TunedBusPath, TunedBusInterface, DBusInstance);
+    QDBusReply<bool> DBusReply = DBusInterface.call(TunedBusMethodNameStop);
+    return DBusReply.value();
+    // QDBusInterface DBusInterface(SystemdBusName, SystemdBusPath, SystemdBusInterface, DBusInstance);
+    // QDBusReply<void> DBusReply = DBusInterface.call(SystemdBusMethodNameStop, SystemdTunedServiceName, SystemdTunedServiceMode);
+    // return DBusReply.isValid();
+}
+
+bool TunedManager::Reload() const
+{
+    QDBusInterface DBusInterface(TunedBusName, TunedBusPath, TunedBusInterface, DBusInstance);
+    QDBusReply<bool> DBusReply = DBusInterface.call(TunedBusMethodNameReload);
+    return DBusReply.value();
 }
 
 void TunedManager::ProfileChangedEvent(const QString& NewProfile, const bool SwitchResult, const QString& ResultMessage)
