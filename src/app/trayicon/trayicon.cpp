@@ -12,6 +12,7 @@
 #include <QActionGroup>
 #include <QThread>
 #include <QMessageBox>
+#include <QTimer>
 
 #include "trayicon/trayicon.h"
 #include "newprofiledialog/newprofiledialog.h"
@@ -19,6 +20,8 @@
 TrayIcon::TrayIcon(QWidget *parent) : QWidget(parent)
 {
     trayIconProfilesMenu = new QMenu(this);
+    startStopTunedTimer = new QTimer(this);
+    connect(startStopTunedTimer, &QTimer::timeout, this, &TrayIcon::updateStartStopTunedActionTitle);
 
     initializeNotifications();
     initializeTuned();
@@ -132,31 +135,32 @@ QMenu* TrayIcon::createProfilesSubmenu()
     return trayIconProfilesMenu;
 }
 
-QMenu* TrayIcon::createTuneDSubmenu()
-{
-    QMenu *trayIconUserProfiles = new QMenu(this);
-    QActionGroup *trayIcontGroup = new QActionGroup(trayIconUserProfiles);
+// QMenu* TrayIcon::createTuneDSubmenu()
+// {
+//     QMenu *trayIconUserProfiles = new QMenu(this);
+//     QActionGroup *trayIcontGroup = new QActionGroup(trayIconUserProfiles);
 
-    trayIconUserProfiles -> setTitle(tr("TuneD"));
-    trayIcontGroup -> setExclusive(true);
+//     trayIconUserProfiles -> setTitle(tr("TuneD"));
+//     trayIcontGroup -> setExclusive(true);
 
-    QAction* startTunedAction = new QAction("Start ...");
-    connect(startTunedAction, SIGNAL(triggered()), this, SLOT(startTunedService()));
+//     startStopTunedAction = new QAction();
+//     updateStartStopTunedActionTitle();
+//     connect(startStopTunedAction, SIGNAL(triggered()), this, SLOT(toggleTunedServiceOnOff()));
 
-    QAction* stopTunedAction = new QAction("Stop ...");
-    connect(stopTunedAction, SIGNAL(triggered()), this, SLOT(stopTunedService()));
+//     // QAction* stopTunedAction = new QAction("Stop ...");
+//     // connect(stopTunedAction, SIGNAL(triggered()), this, SLOT(stopTunedService()));
 
-    QAction* reloadTunedAction = new QAction("Reload configuration...");
-    connect(reloadTunedAction, SIGNAL(triggered()), this, SLOT(reloadTunedConfiguration()));
+//     // QAction* reloadTunedAction = new QAction("Reload configuration...");
+//     // connect(reloadTunedAction, SIGNAL(triggered()), this, SLOT(reloadTunedConfiguration()));
 
-    trayIconUserProfiles -> addAction(startTunedAction);
-    trayIconUserProfiles -> addAction(stopTunedAction);
-    trayIconUserProfiles -> addAction(reloadTunedAction);
+//     trayIconUserProfiles -> addAction(startStopTunedAction);
+//     // trayIconUserProfiles -> addAction(stopTunedAction);
+//     // trayIconUserProfiles -> addAction(reloadTunedAction);
 
-    // trayIconUserProfiles -> addSeparator();
-    trayIconUserProfiles -> addActions(trayIcontGroup -> actions());
-    return trayIconUserProfiles;
-}
+//     // trayIconUserProfiles -> addSeparator();
+//     trayIconUserProfiles -> addActions(trayIcontGroup -> actions());
+//     return trayIconUserProfiles;
+// }
 
 QMenu* TrayIcon::createTrayIconMenu()
 {
@@ -175,15 +179,23 @@ QMenu* TrayIcon::createTrayIconMenu()
     QAction* newUserProfileAction = new QAction(tr("New Profile ..."), this);
     connect(newUserProfileAction, SIGNAL(triggered()), this, SLOT(newUserProfileEvent()));
 
+    startStopTunedAction = new QAction();
+    updateStartStopTunedActionTitle();
+    connect(startStopTunedAction, SIGNAL(triggered()), this, SLOT(toggleTunedServiceOnOff()));
+
     // Construct the menu
     trayIconMenu -> addAction(autoProfile);
     trayIconMenu -> addSeparator();
     trayIconMenu -> addAction(newUserProfileAction);
     trayIconMenu -> addMenu(createProfilesSubmenu());
     trayIconMenu -> addSeparator();
-    trayIconMenu -> addMenu(createTuneDSubmenu());
+    // trayIconMenu -> addMenu(createTuneDSubmenu());
+    trayIconMenu -> addAction(startStopTunedAction);
     trayIconMenu -> addSeparator();
     trayIconMenu -> addAction(quitAction);
+
+    startStopTunedTimer->start(1000); // Update every 1000 ms
+
     return trayIconMenu;
 }
 
@@ -229,11 +241,14 @@ void TrayIcon::newUserProfileEvent() {
     }
 }
 
-void TrayIcon::startTunedService() {
+void TrayIcon::toggleTunedServiceOnOff() {
     if(tunedManager->IsRunning()) {
-        QMessageBox msgBox;
-        msgBox.setText("TuneD is already running!");
-        msgBox.exec();
+        if( !tunedManager->Stop() ) {
+            QMessageBox msgBox;
+            msgBox.setIcon(QMessageBox::Critical);
+            msgBox.setText("TuneD failed to stop!");
+            msgBox.exec();
+        }
         return;
     }
 
@@ -245,28 +260,8 @@ void TrayIcon::startTunedService() {
     }
 }
 
-void TrayIcon::stopTunedService() {
-    if( !tunedManager->IsRunning() ) {
-        QMessageBox msgBox;
-        msgBox.setText("TuneD is already stopped!");
-        msgBox.exec();
-        return;
-    }
-
-    if( !tunedManager->Stop() ) {
-        QMessageBox msgBox;
-        msgBox.setIcon(QMessageBox::Critical);
-        msgBox.setText("TuneD failed to stop!");
-        msgBox.exec();
-    }
+void TrayIcon::updateStartStopTunedActionTitle()
+{
+    const QString actionTitleText = tunedManager->IsRunning() ? "Stop TuneD ..." : "Start TuneD ...";
+    startStopTunedAction->setText(actionTitleText);
 }
-
-void TrayIcon::reloadTunedConfiguration() {
-    if( !tunedManager->Reload() ) {
-        QMessageBox msgBox;
-        msgBox.setIcon(QMessageBox::Critical);
-        msgBox.setText("TuneD failed to reload!");
-        msgBox.exec();
-    }
-}
-

@@ -79,15 +79,25 @@ bool TunedManager::IsRunning() const
     // return DBusInterface.isValid();
 }
 
+bool TunedManager::StartService() const
+{
+    QDBusInterface DBusInterface(SystemdBusName, SystemdBusPath, SystemdBusInterface, DBusInstance);
+    QDBusReply<void> DBusReply = DBusInterface.call(SystemdBusMethodNameStart, SystemdTunedServiceName, SystemdTunedServiceMode);
+    return DBusReply.isValid();
+}
+
+bool TunedManager::StopService() const
+{
+    QDBusInterface DBusInterface(SystemdBusName, SystemdBusPath, SystemdBusInterface, DBusInstance);
+    QDBusReply<void> DBusReply = DBusInterface.call(SystemdBusMethodNameStop, SystemdTunedServiceName, SystemdTunedServiceMode);
+    return DBusReply.isValid();
+}
+
 bool TunedManager::Start() const
 {
     QDBusInterface DBusInterface(TunedBusName, TunedBusPath, TunedBusInterface, DBusInstance);
     QDBusReply<bool> DBusReply = DBusInterface.call(TunedBusMethodNameStart);
     return DBusReply.value();
-
-    // QDBusInterface DBusInterface(SystemdBusName, SystemdBusPath, SystemdBusInterface, DBusInstance);
-    // QDBusReply<void> DBusReply = DBusInterface.call(SystemdBusMethodNameStart, SystemdTunedServiceName, SystemdTunedServiceMode);
-    // return DBusReply.isValid();
 }
 
 bool TunedManager::Stop() const
@@ -95,9 +105,6 @@ bool TunedManager::Stop() const
     QDBusInterface DBusInterface(TunedBusName, TunedBusPath, TunedBusInterface, DBusInstance);
     QDBusReply<bool> DBusReply = DBusInterface.call(TunedBusMethodNameStop);
     return DBusReply.value();
-    // QDBusInterface DBusInterface(SystemdBusName, SystemdBusPath, SystemdBusInterface, DBusInstance);
-    // QDBusReply<void> DBusReply = DBusInterface.call(SystemdBusMethodNameStop, SystemdTunedServiceName, SystemdTunedServiceMode);
-    // return DBusReply.isValid();
 }
 
 bool TunedManager::Reload() const

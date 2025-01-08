@@ -95,6 +95,22 @@ public:
      * @retval true Tuned was successfully started.
      * @retval false An error occured when trying to start Tuned.
     */
+    bool StartService() const;
+
+    /**
+     * Stop the Tuned service.
+     * @returns Result of current operation.
+     * @retval true Tuned was successfully stopped.
+     * @retval false An error occured when trying to stop Tuned.
+    */
+    bool StopService() const;
+
+    /**
+     * Start the Tuned service.
+     * @returns Result of current operation.
+     * @retval true Tuned was successfully started.
+     * @retval false An error occured when trying to start Tuned.
+    */
     bool Start() const;
 
     /**

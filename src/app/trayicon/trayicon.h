@@ -76,17 +76,12 @@ private slots:
     /**
      *
      */
-    void startTunedService();
+    void toggleTunedServiceOnOff();
 
     /**
      *
      */
-    void stopTunedService();
-
-    /**
-     *
-     */
-    void reloadTunedConfiguration();
+    void updateStartStopTunedActionTitle();
 
 private:
     /**
@@ -139,10 +134,10 @@ private:
     */
     QMenu* createProfilesSubmenu();
 
-    /**
-     *
-     */
-    QMenu* createTuneDSubmenu();
+    // /**
+    //  *
+    //  */
+    // QMenu* createTuneDSubmenu();
 
     /**
      * Build and create menu for the system tray icon.
@@ -180,6 +175,12 @@ private:
      *
      */
     QMenu* trayIconProfilesMenu;
+
+    /**
+     *
+     */
+    QAction* startStopTunedAction;
+    QTimer *startStopTunedTimer;
 };
 
 #endif // TRAYICON_H
